@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using KianCommons;
+using CatchErrors.Util;
 
 [HarmonyPatch(typeof(ThreadingWrapper))]
 static class ThreadingWrapperPatch {
@@ -24,12 +25,9 @@ static class ThreadingWrapperPatch {
             text += $"Mod name: {modName ?? "<Unknown>"}";
         }
         HealkitException ex2 = new HealkitException($"The Mod '{modName}' has caused an error", ex);
-
-        Log.Exception(ex2, showInPanel:false);
-        UIView.ForwardException(e: ex2);
         ex2.m_uniqueData = modName;
         ex2.m_supperessMsg = "Suppress similar exceptions caused by this mod";
-        UIView.ForwardException(ex2);
+        ex2.Display();
     }
 
     [HarmonyPrefix, HarmonyPatch("OnUpdate")]

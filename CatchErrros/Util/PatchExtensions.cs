@@ -8,7 +8,7 @@ using KianCommons.Patches;
 using HarmonyLib;
 using System.Reflection.Emit;
 using KianCommons;
-internal static class PatchUtil {
+internal static class PatchExtensions {
     internal static MethodInfo Method<TDelegate>
         (this Type type, bool throwOnError = true, bool instance = false) where TDelegate : Delegate =>
         TranspilerUtils.DeclaredMethod<TDelegate>(type, throwOnError, instance);

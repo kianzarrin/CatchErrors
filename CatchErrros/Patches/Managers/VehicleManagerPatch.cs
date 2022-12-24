@@ -16,7 +16,7 @@ class VehicleManagerPatch {
         var fromSimulationStep = typeof(VehicleAI).Method<Delegates.SimulationStep>();
         var toSimulationStep = typeof(VehicleManagerPatch).GetMethod(nameof(SimulationStep));
         var list = codes.ToList();
-        PatchUtil.ReplaceCalls(list, fromSimulationStep, toSimulationStep);
+        PatchExtensions.ReplaceCalls(list, fromSimulationStep, toSimulationStep);
         return list;
     }
 
@@ -30,7 +30,7 @@ class VehicleManagerPatch {
             HealkitException e2 = new HealkitException(info, e);
             e2.m_uniqueData = _this.m_info.name;
             e2.m_supperessMsg = "Suppress similar exceptions caused by this asset";
-            UIView.ForwardException(e2);
+            e2.Display();
         }
     }
 }

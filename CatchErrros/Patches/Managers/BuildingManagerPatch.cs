@@ -22,8 +22,8 @@ class BuildingManagerPatch {
         var toCheckUnlocking = typeof(BuildingManagerPatch).GetMethod(nameof(CheckUnlocking));
 
         var list = codes.ToList();
-        PatchUtil.ReplaceCalls(list, fromSimulationStep, toSimulationStep);
-        PatchUtil.ReplaceCalls(list, fromCheckUnlocking, toCheckUnlocking);
+        PatchExtensions.ReplaceCalls(list, fromSimulationStep, toSimulationStep);
+        PatchExtensions.ReplaceCalls(list, fromCheckUnlocking, toCheckUnlocking);
         return list;
     }
 
@@ -36,7 +36,7 @@ class BuildingManagerPatch {
             HealkitException e2 = new HealkitException(info, e);
             e2.m_uniqueData = _this.m_info.name;
             e2.m_supperessMsg = "Suppress similar exceptions caused by this asset";
-            UIView.ForwardException(e2);
+            e2.Display();
         }
     }
 
@@ -49,7 +49,7 @@ class BuildingManagerPatch {
             HealkitException e2 = new HealkitException(info, e);
             e2.m_uniqueData = _this.m_info.name;
             e2.m_supperessMsg = "Suppress similar exceptions caused by this asset";
-            UIView.ForwardException(e2);
+            e2.Display();
         }
 
         return false;
