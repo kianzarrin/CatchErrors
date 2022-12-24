@@ -11,6 +11,15 @@ class NetManagerPatch {
     internal static class Delegates {
         internal delegate void SimulationStep(ushort segmentID, ref NetSegment data);
     }
+    static Exception Finalizer(Exception __exception) {
+        string name = "NetManager";
+        var ex = new HealkitException(name + "Simulation Error", __exception);
+        ex.m_uniqueData = name;
+        ex.m_supperessMsg = "Suppress similar exceptions caused by this manager";
+        ex.LogAndForward();
+        return null; // suppress exception
+    }
+
     static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codes) {
         var fromSimulationStep = typeof(NetAI).Method<Delegates.SimulationStep>();
         var toSimulationStep = typeof(NetManagerPatch).GetMethod(nameof(SimulationStep));
@@ -28,7 +37,7 @@ class NetManagerPatch {
             HealkitException e2 = new HealkitException(info, e);
             e2.m_uniqueData = _this.m_info.name;
             e2.m_supperessMsg = "Suppress similar exceptions caused by this asset";
-            e2.Display();
+            e2.LogAndForward();
         }
     }
 }

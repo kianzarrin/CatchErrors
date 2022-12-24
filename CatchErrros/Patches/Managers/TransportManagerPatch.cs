@@ -12,6 +12,16 @@ class TransportManagerManagerPatch {
     internal static class Delegates {
         internal delegate void SimulationStep(ushort lineID);
     }
+
+    static Exception Finalizer(Exception __exception) {
+        string name = "TransportManager";
+        var ex = new HealkitException(name + "Simulation Error", __exception);
+        ex.m_uniqueData = name;
+        ex.m_supperessMsg = "Suppress similar exceptions caused by this manager";
+        ex.LogAndForward();
+        return null; // suppress exception
+    }
+
     static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codes) {
         var fromSimulationStep = typeof(TransportLine).Method<Delegates.SimulationStep>();
         var toSimulationStep = typeof(TransportManagerManagerPatch).GetMethod(nameof(SimulationStep));
@@ -30,7 +40,7 @@ class TransportManagerManagerPatch {
             HealkitException e2 = new HealkitException(info, e);
             e2.m_supperessMsg = "Suppress this exception";
             e2.Log();
-            e2.Display();
+            e2.LogAndForward();
         }
     }
 }

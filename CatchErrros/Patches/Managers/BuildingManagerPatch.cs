@@ -15,6 +15,15 @@ class BuildingManagerPatch {
     internal static class Delegates {
         internal delegate void SimulationStep(ushort buildingID, ref Building data);
     }
+    static Exception Finalizer(Exception __exception) {
+        string name = "BuildingManager";
+        var ex = new HealkitException(name + "Simulation Error", __exception);
+        ex.m_uniqueData = name;
+        ex.m_supperessMsg = "Suppress similar exceptions caused by this manager";
+        ex.LogAndForward();
+        return null; // suppress exception
+    }
+
     static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codes) {
         var fromSimulationStep = typeof(BuildingAI).Method<Delegates.SimulationStep>();
         var toSimulationStep = typeof(BuildingManagerPatch).GetMethod(nameof(SimulationStep));
@@ -36,7 +45,7 @@ class BuildingManagerPatch {
             HealkitException e2 = new HealkitException(info, e);
             e2.m_uniqueData = _this.m_info.name;
             e2.m_supperessMsg = "Suppress similar exceptions caused by this asset";
-            e2.Display();
+            e2.LogAndForward();
         }
     }
 
@@ -49,7 +58,7 @@ class BuildingManagerPatch {
             HealkitException e2 = new HealkitException(info, e);
             e2.m_uniqueData = _this.m_info.name;
             e2.m_supperessMsg = "Suppress similar exceptions caused by this asset";
-            e2.Display();
+            e2.LogAndForward();
         }
 
         return false;

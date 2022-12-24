@@ -12,6 +12,16 @@ class VehicleManagerPatch {
     internal static class Delegates {
         internal delegate void SimulationStep(ushort vehicleID, ref Vehicle data, Vector3 physicsLodRefPos);
     }
+
+    static Exception Finalizer(Exception __exception) {
+        string name = "VehicleManager";
+        var ex = new HealkitException(name + "Simulation Error", __exception);
+        ex.m_uniqueData = name;
+        ex.m_supperessMsg = "Suppress similar exceptions caused by this manager";
+        ex.LogAndForward();
+        return null; // suppress exception
+    }
+
     static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codes) {
         var fromSimulationStep = typeof(VehicleAI).Method<Delegates.SimulationStep>();
         var toSimulationStep = typeof(VehicleManagerPatch).GetMethod(nameof(SimulationStep));
@@ -30,7 +40,7 @@ class VehicleManagerPatch {
             HealkitException e2 = new HealkitException(info, e);
             e2.m_uniqueData = _this.m_info.name;
             e2.m_supperessMsg = "Suppress similar exceptions caused by this asset";
-            e2.Display();
+            e2.LogAndForward();
         }
     }
 }

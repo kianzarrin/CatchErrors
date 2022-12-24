@@ -27,7 +27,7 @@ static class ThreadingWrapperPatch {
         HealkitException ex2 = new HealkitException($"The Mod '{modName}' has caused an error", ex);
         ex2.m_uniqueData = modName;
         ex2.m_supperessMsg = "Suppress similar exceptions caused by this mod";
-        ex2.Display();
+        ex2.LogAndForward();
     }
 
     [HarmonyPrefix, HarmonyPatch("OnUpdate")]
